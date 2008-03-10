@@ -75,12 +75,11 @@ class ZenFolioAPI (object):
 
         if self.__handlerCache.has_key(method):
             # If we already have the handler, return it
-            return self.__handlerCache.has_key(method)
+            return self.__handlerCache[method]
 
         def handler (*args, **kwargs):
         
             params = {}
-            print "args: %s" % list(args)
             params.update ({"params" : list(args)})
             params.update ({"method":method})
             params.update ({"id":"1"})
@@ -98,9 +97,8 @@ class ZenFolioAPI (object):
             protocol = kwargs.get("protocol", "http")
             url = protocol + "://" + self.host + self.api_path
             req = urllib2.Request(url, data=body, headers=headers)
-            opener = urllib2.build_opener(urllib2.HTTPHandler(debuglevel=1))
+            opener = urllib2.build_opener(urllib2.HTTPHandler(debuglevel=0))
 
-            print url
             try:
                 data = opener.open(req).read()
                 LOG.debug ("RESPONSE: --\n%s\n--\n" % data)
@@ -158,7 +156,7 @@ class ZenFolioAPI (object):
         upload_url = 'http://' + "www.zenfolio.com" + upload_path
         url = upload_url + '?' + urllib.urlencode ([("filename", fname), ("modified", modified)])
         req = urllib2.Request(upload_url, data=data, headers=headers)
-        opener = urllib2.build_opener(urllib2.HTTPHandler(debuglevel=1))
+        opener = urllib2.build_opener(urllib2.HTTPHandler(debuglevel=0))
         
         try:
             data = opener.open(req).read()
