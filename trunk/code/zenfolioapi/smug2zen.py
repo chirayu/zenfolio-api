@@ -50,9 +50,12 @@ def s_download_image (sapi, session_id, image_id, image_key):
     headers = {}
     headers['X-Smug-Version'] = sapi.version
     headers['X-Smug-SessionID'] = session_id
-
+    
+    import pdb
+    pdb.set_trace()
+    
     req = urllib2.Request(original_url, headers=headers)
-    opener = urllib2.build_opener(urllib2.HTTPHandler(debuglevel=0))    
+    opener = urllib2.build_opener(urllib2.HTTPHandler(debuglevel=1))    
     try:
         data = opener.open(req).read()
     except Exception, e:
@@ -97,6 +100,10 @@ def transfer_albums (sapi, session_id, zapi):
             if element ["Type"] == "Gallery" and element["$type"] == "PhotoSet":
                 if element ["Title"] == album_title:
                     matches.append (element)
+        # Get album details
+        result = sapi.albums_getInfo(SessionID=session_id, AlbumID=album_id)
+        album_description = result.Album[0]["Description"]        
+        album_image_count = result.Album[0]["ImageCount"]
 
         if len (matches) == 0:
             # Step 4: Create a zenfolio gallery
@@ -108,21 +115,13 @@ def transfer_albums (sapi, session_id, zapi):
             print "Multiple albums with the name %s exist in Zenfolio. am using the first album to transfer all images" % album_title
             zen_photoset_id, zen_upload_path = matches[0]["Id"], matches[0]["UploadUrl"] # TBD: what about multiple matches
         
-        
-        # Get album details
-        result = sapi.albums_getInfo(SessionID=session_id, AlbumID=album_id)
-        album_description = result.Album[0]["Description"]
-        
-        album_image_count = result.Album[0]["ImageCount"]
-
         if matches and album_image_count == matches[0]["PhotoCount"]:
             continue # complete album is most likely updated. Ideally a check on 
-        
         
         # Step 2: Ask the user if he wants to transfer the complete album
         while True and user_status != 'D':
             user_status=raw_input('Do you want to transfer album %s? (y(es)/n(o)/a(bort)/D(on\'t prompt) : ' % album_title)
-            if not (user_status == 'y' or user_status == 'n' or user_status == 'a'):
+            if not (user_status == 'y' or user_status == 'n' or user_status == 'a' or user_status == 'D'):
                 print "Enter correct value."
                 continue
             else:
@@ -141,6 +140,7 @@ def transfer_albums (sapi, session_id, zapi):
         image_list = s_get_all_images (sapi, session_id, album_id)
 
         # Step 6: transfer images to zenfolio
+        print "Transfering approximately %s images" % len(image_list)
         for image in image_list:
             # TBD - there is no provision to sync partially synced albums
             if image.elementName == "Image":
