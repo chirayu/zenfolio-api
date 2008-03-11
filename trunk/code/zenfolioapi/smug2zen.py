@@ -111,8 +111,9 @@ def transfer_albums (sapi, session_id, zapi):
         else:
             print "Multiple albums with the name %s exist in Zenfolio. am using the first album to transfer all images" % album_title
             zen_photoset_id, zen_upload_path = matches[0]["Id"], matches[0]["UploadUrl"] # TBD: what about multiple matches
-        
-        if matches and album_image_count == matches[0]["PhotoCount"]:
+
+        if len (matches) > 0 and int(album_image_count) == matches[0]["PhotoCount"]:
+            print "Album %s has already been transferred...skipping" % album_title
             continue # complete album is most likely updated. Ideally a check on 
         
         # Step 2: Ask the user if he wants to transfer the complete album
