@@ -94,9 +94,6 @@ def transfer_albums (sapi, session_id, zapi):
             diff.remove (l)
         print "There are some [%s] duplicate album names. Please rename accordingly" % diff
 
-    import pdb
-    pdb.set_trace()
-        
     for album in album_list:
         album_id = album["id"]
         album_title = album["Title"]
