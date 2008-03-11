@@ -51,9 +51,6 @@ def s_download_image (sapi, session_id, image_id, image_key):
     headers['X-Smug-Version'] = sapi.version
     headers['X-Smug-SessionID'] = session_id
     
-    import pdb
-    pdb.set_trace()
-    
     req = urllib2.Request(original_url, headers=headers)
     opener = urllib2.build_opener(urllib2.HTTPHandler(debuglevel=1))    
     try:
