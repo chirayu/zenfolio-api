@@ -5,6 +5,8 @@ manage the galleries once they are stored """
 from optparse import OptionParser, OptionValueError
 import urllib2
 
+MAX_IMAGE_TRANSFER_TRIES = 2
+
 def init_parser():
         
     parser = OptionParser (usage="%prog [--smuglogin login] [--smugpasswpord password] [--zenlogin login] [--zenpassword password] ")
@@ -63,8 +65,16 @@ def s_download_image (sapi, session_id, image_id, image_key):
     return file_name, data
 
 def transfer_image_s2z (sapi, session_id, image_id, image_key, zapi, upload_path, photoset_id):
-    file_name, buffer, = s_download_image (sapi, session_id, image_id, image_key)
-    zapi.uploads (upload_path, buffer, file_name)
+    tries = 0
+    while tries < MAX_IMAGE_TRANSFER_TRIES:
+        try:
+            file_name, buffer, = s_download_image (sapi, session_id, image_id, image_key)
+            zapi.uploads (upload_path, buffer, file_name)
+        except Exception, e:
+            tries ++
+            continue
+        else:
+            break            
     return
     
 def transfer_albums (sapi, session_id, zapi):
