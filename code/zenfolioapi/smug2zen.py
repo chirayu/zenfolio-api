@@ -82,12 +82,21 @@ def transfer_albums (sapi, session_id, zapi):
     result = sapi.albums_get(SessionID=session_id, Heavy = True) # TBD - Heavy does not seem to work
     album_list = result.Albums[0].Album
     album_set = set()
-    for album in album_list: album_set.add (album["Title"])
+    album_title_list = []
+    for album in album_list: 
+        album_set.add (album["Title"])
+        album_title_list.append (album["Title"])
 
     if len (album_set) != len (album_list):
-        print "There are some duplicate album names. Please rename accordingly"
-    
-    
+        diff = []
+        diff += album_title_list
+        for l in list(album_set):
+            diff.remove (l)
+        print "There are some [%s] duplicate album names. Please rename accordingly" % diff
+
+    import pdb
+    pdb.set_trace()
+        
     for album in album_list:
         album_id = album["id"]
         album_title = album["Title"]
@@ -107,7 +116,7 @@ def transfer_albums (sapi, session_id, zapi):
             print "Creating Zenfolio Gallery : %s" % album_title
             zen_photoset_id, zen_upload_path = z_create_gallery (zapi, root_zenfolio_id, album_title, album_description)
         elif len (matches) == 1:
-            zen_photoset_id, zen_upload_path = matches[0]["Id"], matches[0]["UploadUrl"] # TBD: what about multiple matches
+            zen_photoset_id, zen_upload_path = matches[0]["Id"], matches[0]["UploadUrl"] 
         else:
             print "Multiple albums with the name %s exist in Zenfolio. am using the first album to transfer all images" % album_title
             zen_photoset_id, zen_upload_path = matches[0]["Id"], matches[0]["UploadUrl"] # TBD: what about multiple matches
