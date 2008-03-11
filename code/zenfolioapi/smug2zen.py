@@ -134,8 +134,12 @@ def transfer_albums (sapi, session_id, zapi):
         # Step 3: Check if the album exists in Zenfolio, with a similar number of pictures - TBD
 
         # Step 5: get all the imgaes (id)  from smugmug
-        image_list = s_get_all_images (sapi, session_id, album_id)
-
+        try:
+            image_list = s_get_all_images (sapi, session_id, album_id)
+        except Exception, e:
+            print "Mostly empty album...ignoring"
+            continue            
+        
         # Step 6: transfer images to zenfolio
         print "Transfering approximately %s images" % len(image_list)
         for image in image_list:
