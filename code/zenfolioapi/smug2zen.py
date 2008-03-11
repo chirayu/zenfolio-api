@@ -66,12 +66,14 @@ def s_download_image (sapi, session_id, image_id, image_key):
 
 def transfer_image_s2z (sapi, session_id, image_id, image_key, zapi, upload_path, photoset_id):
     tries = 0
-    while tries < MAX_IMAGE_TRANSFER_TRIES:
+    while True:
         try:
             file_name, buffer, = s_download_image (sapi, session_id, image_id, image_key)
             zapi.uploads (upload_path, buffer, file_name)
         except Exception, e:
             tries += 1
+            if tries >= MAX_IMAGE_TRANSFER_TRIES:
+                raise RuntimeError ("max tries for image %s exceeded" % image_id)
             continue
         else:
             break            
