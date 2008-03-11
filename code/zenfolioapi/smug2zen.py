@@ -52,7 +52,7 @@ def s_download_image (sapi, session_id, image_id, image_key):
     headers['X-Smug-SessionID'] = session_id
     
     req = urllib2.Request(original_url, headers=headers)
-    opener = urllib2.build_opener(urllib2.HTTPHandler(debuglevel=1))    
+    opener = urllib2.build_opener(urllib2.HTTPHandler(debuglevel=0))
     try:
         data = opener.open(req).read()
     except Exception, e:
