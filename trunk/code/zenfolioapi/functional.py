@@ -106,6 +106,7 @@ class ZenFolioAPI (object):
                 if self.fail_on_error:
                     ZenFolioAPI.testFailure(result, True)
             except Exception, e:
+                print e
                 raise RuntimeError
 
             return result
