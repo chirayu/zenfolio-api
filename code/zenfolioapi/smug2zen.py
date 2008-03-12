@@ -2,8 +2,33 @@
 gallery with the same name in zenfolio's root group. The user has to
 manage the galleries once they are stored """
 
+# TODO
+
+# 1. This script does not work well if there are multiple albums with
+# the same name in smugmug. This is because it does not have any way
+# to map a Zenfolio photoset to a smugmug gallery. A persistent
+# mapping (either stored in a file, or maybe as description in a
+# temporary zenfolio photoset :-) ) is required.
+
+# 2. This script should ask for the zenfolio group in which the
+# smugmug albums have to be stored. The current solution (picking up
+# the first group) is a hack, bu tit works for me as I doint' have any
+# useful galleries in Zenfolio.
+
+# 3. There is some problem creating Zenfolio photosets with a forward
+# slash in name or description, I get "HTTP 400" error in those cases,
+# and have had to create the photosets with hand.
+
+# 4. Handling of Photosets which have not been transferred
+# completely. Generally two solutions come to mind - either delete
+# these partial photosets, or upload only the files which are
+# absent. So far, I have been manually deleting these photosets.
+
+
 from optparse import OptionParser, OptionValueError
 import urllib2
+import smugmugapi.functional # download from svn at http://code.google.com/p/smugmug-api/
+import zenfolioapi.functional
 
 MAX_IMAGE_TRANSFER_TRIES = 2
 
@@ -181,8 +206,6 @@ def main():
             options.smug_gallery):
         parser.error ("Please provide all command line options")
 
-    import smugmugapi.functional
-    import zenfolioapi.functional
 
     # Step 1. Login into Smugmug
     smugmug_api_key = "29qIYnAB9zHcIhmrqhZ7yK7sPsdfoV0e"  # API key
