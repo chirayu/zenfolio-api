@@ -2,6 +2,11 @@
 gallery with the same name in zenfolio's root group. The user has to
 manage the galleries once they are stored """
 
+# Suggested use: This script is meant for one time use. It copies all
+# smugmug albums in one Zenfolio Group (it does not create hierarchies
+# based on the category, and sub-category in Smugmug. Post sync, the
+# user has to manually reorganize Zenfolio. 
+
 # TODO
 
 # 1. This script does not work well if there are multiple albums with
@@ -24,6 +29,8 @@ manage the galleries once they are stored """
 # these partial photosets, or upload only the files which are
 # absent. So far, I have been manually deleting these photosets.
 
+# 5. Create a hierarchical structure based on the categories and
+# sub-categories within smugmug.
 
 from optparse import OptionParser, OptionValueError
 import urllib2
